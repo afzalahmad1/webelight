@@ -1,0 +1,22 @@
+.container{
+    width:calc(100vw - 20rem);
+    /* height: 400px; */
+    /* background-color: rgb(219, 213, 213); */
+    margin-top: 10px;
+    border: 3px solid #6e6b6b;
+    border-radius: 5px;
+
+}
+.container-flex{
+    display: flex;
+    justify-content: center;
+    flex-flow:  row wrap;
+    /* border: 1px solid #000; */
+    /* height: 99vh; */
+    /* overflow-y: scroll; */
+
+}
+.container h3{
+    text-align: center;
+    font-size: 3rem;
+}
