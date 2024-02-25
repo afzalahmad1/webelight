@@ -6,9 +6,9 @@ import HighchartsReact from "highcharts-react-official";
 
 const RepoDetails = ({commit,addition,deletion,contributors}) => {
     const [value,setValue] = useState("commit")
-    // console.log("commitarr",commit);
-    // console.log("del",deletion);
-    // console.log("add",addition);
+    console.log("commitarr",commit);
+    console.log("delArr",deletion);
+    console.log("addArr",addition);
   const options = {
     title: {
       text: value === 'commit'?`Total Changes ${commit.total}`: value === 'addition'? 'weekly Addition Graph': value === 'deletion'? 'weekly Deletion Graph':"",
@@ -78,10 +78,10 @@ const RepoDetails = ({commit,addition,deletion,contributors}) => {
           <option value="deletion">Deletion</option>
         </select>
       </div>
-      <div>
+      <div className="graph">
         <HighchartsReact highcharts={Highcharts} options={options} /> 
       </div>
-      <div>
+      <div className="graph">
           <HighchartsReact highcharts={Highcharts} options={options2} /> 
       </div>
     </div>

@@ -3,10 +3,12 @@ import "./styles.css";
 
 import RepoDetails from "../RepoDetails";
 import axios from "axios";
+import Loader from "../Loader";
 
 
 const Card = ({ repo }) => {
   const [details, setDetails] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [commit, setCommit] = useState([]);
   const [addition, setAddition] = useState([]);
   const [deletion, setDeletion] = useState([]);
@@ -24,13 +26,23 @@ const Card = ({ repo }) => {
       if (details) {
         // Getting addition and deletion
         
-        await fetchAddition();
+        const data1 = await fetchAddition();
 
         // getting commit
-        await fetchCommit();
+        const data2 = await fetchCommit();
 
         // Getting contributors
-        await fetchContributors();
+        const data3 = await fetchContributors();
+        if(data1 && data2 && data3){
+          setIsLoading(false)
+        }
+        console.log("ccccc",data1);
+        console.log("aaaaaa",data2);
+        console.log("cont",data3);
+        setAddition(data1.data.map((week) => week[1]));
+        setDeletion(data1.data.map((week) => week[2]));
+        setCommit(data2.data[data2.data.length - 2]);
+        setContributors(data3.data)
         
       }
     } catch (error) {
@@ -53,10 +65,10 @@ const Card = ({ repo }) => {
         console.log("addition", 202);
         setTimeout(fetchAddition, 1500);
       } else {
-        console.log("res1", res1);
-        setAddition(res1.data.map((week) => week[1]));
-        setDeletion(res1.data.map((week) => week[2]));
-        // return res1
+        // console.log("res1", res1);
+        // setAddition(res1.data.map((week) => week[1]));
+        // setDeletion(res1.data.map((week) => week[2]));
+        return res1
         // format : [totalAddition,weeklyAddition,weeklyDeletion]
       }
     } catch (error) {
@@ -79,9 +91,9 @@ const Card = ({ repo }) => {
         console.log("commit", 202);
         setTimeout(fetchCommit, 1500);
       } else {
-        console.log("res2", res2);
-        setCommit(res2.data[res2.data.length - 1]);
-        // return res2.data[res2.data.length-1]
+        // console.log("res2", res2);
+        // setCommit(res2.data[res2.data.length - 1]);
+        return res2
       }
     } catch (error) {
       console.log(error);
@@ -102,8 +114,9 @@ const Card = ({ repo }) => {
         console.log("contri", 202);
         setTimeout(fetchContributors, 1500);
       } else {
-        console.log("contri", res);
-        setContributors(res.data)
+        // console.log("contri", res);
+        // setContributors(res.data)
+        return res
       }
     } catch (error) {
       console.log(error);
@@ -140,11 +153,10 @@ const Card = ({ repo }) => {
         </div>
         <div className="expand" onClick={handleExpand}>
           {details ? "^" : ">"}
-        </div>
+        </div>  
       </div>
-      {details && (
-       <RepoDetails addition={addition} deletion={deletion} commit={commit} contributors={contributors}/>
-      )}
+      {details && (isLoading ? <h1 style={{textAlign:"center"}}>Loading.....</h1> :  <RepoDetails addition={addition} deletion={deletion} commit={commit} contributors={contributors}/>)
+      }
     </div>
   );
 };

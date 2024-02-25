@@ -1,52 +1,43 @@
 import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import "./styles.css";
-import axios from "axios";
+
 import Loader from "../components/Loader";
 import PaginationComponent from "../components/Pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRepos } from "../redux/slices/repo";
 const Github = () => {
-  const [data, setdata] = useState([]);
-  const [page,setPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.repo);
   useEffect(() => {
-    fetchData();
+    
+    dispatch(fetchRepos(page));
   }, [page]);
   const handlePageChange = (event, value) => {
-    setIsLoading(true)
+
     setPage(value);
   };
-  const fetchData = async () => {
-    try {
-      const res = await axios(
-        `https://api.github.com/search/repositories?q=created:>2024-02-15&sort=stars&order=desc&page=${page}`
-      );
-      if(res.status === 200){
-        console.log(res.data.items);
-        setdata(res.data.items);
-        setIsLoading(false)
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+  if (state.loading) {
+    return <Loader />;
+  }
   return (
     <div className="container-flex">
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div >
-          <div className="container">
-            <h3>Most Starred Repos</h3>
-            <div className="card-container">
-              {data.map((repo) => {
-                return <Card repo={repo} key={repo.id} />;
-              })}
-            </div>
+      <div>
+        <div className="container">
+          <h3>Most Starred Repos</h3>
+         
+          <div className="card-container">
+           {console.log("state",state)}
+            {state.data.items !== undefined ? state.data.items.map((repo) => {
+              return <Card repo={repo} key={repo.id} />;
+            }):<h1>Network Error</h1>}
           </div>
-          
-          <PaginationComponent page={page} handlePageChange={handlePageChange}/>
-    </div>
-      )}
+        </div>
+
+        <PaginationComponent page={page} handlePageChange={handlePageChange} />
+      </div>
     </div>
   );
 };
